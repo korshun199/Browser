@@ -3,12 +3,16 @@ package com.example.browser
 import android.content.Intent
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
+import android.webkit.ConsoleMessage
+import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ScrollView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.browser.adblock.AdBlocker
 import com.example.browser.settings.BrowserSettings
@@ -21,6 +25,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnBack: Button
     private lateinit var btnForward: Button
     private lateinit var btnSettings: Button
+    private lateinit var consoleOutput: TextView
+    private lateinit var consoleScroll: ScrollView
     private var settingsChanged = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,17 +44,22 @@ class MainActivity : AppCompatActivity() {
         btnBack = findViewById(R.id.btnBack)
         btnForward = findViewById(R.id.btnForward)
         btnSettings = findViewById(R.id.btnSettings)
+        consoleOutput = findViewById(R.id.consoleOutput)
+        consoleScroll = findViewById(R.id.consoleScroll)
 
         // Настройка WebView
         webView.settings.javaScriptEnabled = true
         webView.settings.domStorageEnabled = true
+
+        // Клиент для перехвата запросов и блокировки рекламы
         webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
                 url?.let { urlBar.setText(it) }
+                // Очищаем консоль при загрузке новой страницы
+                consoleOutput.text = "Консоль JS:"
             }
 
-            // Перехват запросов для блокировки рекламы
             override fun shouldInterceptRequest(
                 view: WebView?,
                 request: WebResourceRequest?
@@ -59,6 +70,35 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 return super.shouldInterceptRequest(view, request)
+            }
+        }
+
+        // Клиент для перехвата сообщений консоли JS
+        webView.webChromeClient = object : WebChromeClient() {
+            override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
+                consoleMessage?.let { msg ->
+                    val level = when (msg.messageLevel()) {
+                        ConsoleMessage.MessageLevel.ERROR -> "ОШИБКА"
+                        ConsoleMessage.MessageLevel.WARNING -> "ПРЕДУПРЕЖДЕНИЕ"
+                        ConsoleMessage.MessageLevel.LOG -> "ЛОГ"
+                        ConsoleMessage.MessageLevel.DEBUG -> "ОТЛАДКА"
+                        ConsoleMessage.MessageLevel.TIP -> "СОВЕТ"
+                        else -> "ИНФО"
+                    }
+                    val line = msg.lineNumber()
+                    val source = msg.sourceId() ?: "неизвестно"
+                    val message = msg.message()
+
+                    val entry = "[$level] $source:$line — $message\n"
+                    // Добавляем сообщение в консоль
+                    consoleOutput.append(entry)
+
+                    // Автопрокрутка вниз
+                    consoleScroll.post {
+                        consoleScroll.fullScroll(ScrollView.FOCUS_DOWN)
+                    }
+                }
+                return true
             }
         }
 
@@ -99,6 +139,15 @@ class MainActivity : AppCompatActivity() {
             settingsChanged = true
             startActivity(Intent(this, SettingsActivity::class.java))
         }
+
+        // Сворачивание/разворачивание консоли по нажатию
+        consoleOutput.setOnClickListener {
+            if (consoleScroll.visibility == android.view.View.VISIBLE) {
+                consoleScroll.visibility = android.view.View.GONE
+            } else {
+                consoleScroll.visibility = android.view.View.VISIBLE
+            }
+        }
     }
 
     private fun loadUrlFromBar() {
@@ -118,7 +167,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Если настройки менялись — перезагружаем текущую страницу для применения блокировки рекламы
         if (settingsChanged) {
             settingsChanged = false
             webView.reload()
