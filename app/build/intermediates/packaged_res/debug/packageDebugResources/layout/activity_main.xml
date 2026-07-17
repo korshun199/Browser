@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Основной макет браузера: адресная строка сверху, WebView снизу -->
+<!-- Основной макет браузера: адресная строка, WebView, консоль ошибок JS -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,7 +13,6 @@
         android:padding="4dp"
         android:gravity="center_vertical">
 
-        <!-- Кнопка Назад -->
         <Button
             android:id="@+id/btnBack"
             android:layout_width="wrap_content"
@@ -22,7 +21,6 @@
             android:textSize="18sp"
             android:minWidth="48dp" />
 
-        <!-- Кнопка Вперёд -->
         <Button
             android:id="@+id/btnForward"
             android:layout_width="wrap_content"
@@ -31,7 +29,6 @@
             android:textSize="18sp"
             android:minWidth="48dp" />
 
-        <!-- Поле ввода URL -->
         <EditText
             android:id="@+id/urlBar"
             android:layout_width="0dp"
@@ -42,7 +39,6 @@
             android:singleLine="true"
             android:imeOptions="actionGo" />
 
-        <!-- Кнопка Перейти -->
         <Button
             android:id="@+id/btnGo"
             android:layout_width="wrap_content"
@@ -50,7 +46,6 @@
             android:text="Go"
             android:minWidth="48dp" />
 
-        <!-- Кнопка Настройки -->
         <Button
             android:id="@+id/btnSettings"
             android:layout_width="wrap_content"
@@ -59,10 +54,31 @@
             android:minWidth="48dp" />
     </LinearLayout>
 
-    <!-- Сам WebView -->
+    <!-- WebView -->
     <WebView
         android:id="@+id/webView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
+
+    <!-- Консоль ошибок JS -->
+    <ScrollView
+        android:id="@+id/consoleScroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="120dp"
+        android:background="#F8F8F8"
+        android:padding="4dp"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/consoleOutput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Консоль JS:"
+            android:textSize="11sp"
+            android:textColor="#333333"
+            android:fontFamily="monospace"
+            android:gravity="bottom" />
+    </ScrollView>
 </LinearLayout>

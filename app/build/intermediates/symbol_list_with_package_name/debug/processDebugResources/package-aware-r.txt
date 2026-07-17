@@ -3072,6 +3072,8 @@ id clockwise
 id collapseActionView
 id compress
 id confirm_button
+id consoleOutput
+id consoleScroll
 id container
 id content
 id contentPanel

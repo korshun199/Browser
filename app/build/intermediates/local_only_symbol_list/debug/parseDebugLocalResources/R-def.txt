@@ -5,6 +5,8 @@ id btnForward
 id btnGo
 id btnSave
 id btnSettings
+id consoleOutput
+id consoleScroll
 id etHomepage
 id spinnerSearch
 id swAdBlock

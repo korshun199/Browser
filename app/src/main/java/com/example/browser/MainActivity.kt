@@ -1,7 +1,11 @@
 package com.example.browser
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
 import android.view.inputmethod.EditorInfo
 import android.webkit.ConsoleMessage
 import android.webkit.WebChromeClient
@@ -57,7 +61,7 @@ class MainActivity : AppCompatActivity() {
                 super.onPageFinished(view, url)
                 url?.let { urlBar.setText(it) }
                 // Очищаем консоль при загрузке новой страницы
-                consoleOutput.text = "Консоль JS:"
+                consoleOutput.text = "Консоль JS"
             }
 
             override fun shouldInterceptRequest(
@@ -77,21 +81,32 @@ class MainActivity : AppCompatActivity() {
         webView.webChromeClient = object : WebChromeClient() {
             override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
                 consoleMessage?.let { msg ->
-                    val level = when (msg.messageLevel()) {
-                        ConsoleMessage.MessageLevel.ERROR -> "ОШИБКА"
-                        ConsoleMessage.MessageLevel.WARNING -> "ПРЕДУПРЕЖДЕНИЕ"
-                        ConsoleMessage.MessageLevel.LOG -> "ЛОГ"
-                        ConsoleMessage.MessageLevel.DEBUG -> "ОТЛАДКА"
-                        ConsoleMessage.MessageLevel.TIP -> "СОВЕТ"
-                        else -> "ИНФО"
-                    }
+                    val level = msg.messageLevel()
                     val line = msg.lineNumber()
                     val source = msg.sourceId() ?: "неизвестно"
                     val message = msg.message()
 
-                    val entry = "[$level] $source:$line — $message\n"
-                    // Добавляем сообщение в консоль
-                    consoleOutput.append(entry)
+                    // Цвет зависит от уровня сообщения
+                    val color = when (level) {
+                        ConsoleMessage.MessageLevel.ERROR -> Color.RED
+                        ConsoleMessage.MessageLevel.WARNING -> Color.parseColor("#FFAA00")
+                        else -> Color.GRAY
+                    }
+                    val prefix = when (level) {
+                        ConsoleMessage.MessageLevel.ERROR -> "ОШИБКА"
+                        ConsoleMessage.MessageLevel.WARNING -> "ПРЕД"
+                        ConsoleMessage.MessageLevel.LOG -> "ЛОГ"
+                        ConsoleMessage.MessageLevel.DEBUG -> "ОТЛ"
+                        ConsoleMessage.MessageLevel.TIP -> "СОВЕТ"
+                        else -> "ИНФО"
+                    }
+
+                    val entry = "[$prefix] $source:$line — $message\n"
+                    val spannable = SpannableString(entry)
+                    // Окрашиваем строку целиком в цвет уровня
+                    spannable.setSpan(ForegroundColorSpan(color), 0, entry.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+                    consoleOutput.append(spannable)
 
                     // Автопрокрутка вниз
                     consoleScroll.post {
@@ -148,6 +163,9 @@ class MainActivity : AppCompatActivity() {
                 consoleScroll.visibility = android.view.View.VISIBLE
             }
         }
+
+        // Убираем фокус с адресной строки, чтобы клавиатура не вылезала при старте
+        webView.requestFocus()
     }
 
     private fun loadUrlFromBar() {
