@@ -28,6 +28,8 @@ class TerminalActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
     private lateinit var scrollView: ScrollView
 
+    private var currentPrompt = "oleg@vps:~$ "
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_terminal)
@@ -46,25 +48,17 @@ class TerminalActivity : AppCompatActivity() {
         val btnPaste = findViewById<Button>(R.id.btnPaste)
         val btnEnter = findViewById<Button>(R.id.btnEnter)
 
-        // Tab — вставляет символ табуляции
+        updatePrompt()
+
         btnTab.setOnClickListener {
             val pos = commandInput.selectionStart
-            val text = commandInput.text
-            text.insert(pos, "\t")
+            commandInput.text.insert(pos, "\t")
             commandInput.setSelection(pos + 1)
         }
 
-        // Esc — отправляет escape-последовательность (прерывает текущую операцию)
-        btnEsc.setOnClickListener {
-            executeCommand("\u001B")
-        }
+        btnEsc.setOnClickListener { executeCommand("\u001B") }
+        btnCtrlC.setOnClickListener { executeCommand("\u0003") }
 
-        // Ctrl+C — отправляет SIGINT
-        btnCtrlC.setOnClickListener {
-            executeCommand("\u0003")
-        }
-
-        // Копировать — копирует весь вывод терминала в буфер обмена
         btnCopy.setOnClickListener {
             val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clip = ClipData.newPlainText("terminal", terminalOutput.text)
@@ -72,7 +66,6 @@ class TerminalActivity : AppCompatActivity() {
             Toast.makeText(this, "Вывод скопирован", Toast.LENGTH_SHORT).show()
         }
 
-        // Вставить — вставляет текст из буфера обмена в поле ввода
         btnPaste.setOnClickListener {
             val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clip = clipboard.primaryClip
@@ -84,25 +77,27 @@ class TerminalActivity : AppCompatActivity() {
             }
         }
 
-        // Enter — отправляет команду из поля ввода
-        btnEnter.setOnClickListener {
-            val cmd = commandInput.text.toString().trim()
-            if (cmd.isNotEmpty()) {
-                executeCommand(cmd)
-                commandInput.text.clear()
-            }
-        }
-
+        btnEnter.setOnClickListener { sendCommand() }
+        btnSend.setOnClickListener { sendCommand() }
         btnConnect.setOnClickListener { connectToVps() }
-        btnSend.setOnClickListener {
-            val cmd = commandInput.text.toString().trim()
-            if (cmd.isNotEmpty()) {
-                executeCommand(cmd)
-                commandInput.text.clear()
-            }
+
+        // Запускаем команду по Enter с клавиатуры
+        commandInput.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_SEND) {
+                sendCommand()
+                true
+            } else false
         }
 
         connectToVps()
+    }
+
+    private fun sendCommand() {
+        val cmd = commandInput.text.toString().trim()
+        if (cmd.isNotEmpty()) {
+            executeCommand(cmd)
+            commandInput.text.clear()
+        }
     }
 
     private fun connectToVps() {
@@ -122,23 +117,53 @@ class TerminalActivity : AppCompatActivity() {
 
             result.onSuccess {
                 appendOutput(it)
-                appendOutput("Готов к работе.")
+                updatePromptFromServer()
             }.onFailure {
                 appendOutput("Ошибка подключения: ${it.message}")
             }
         }
     }
 
+    /**
+     * Получает текущий каталог и пользователя с VPS для формирования приглашения.
+     */
+    private suspend fun updatePromptFromServer() {
+        val user = BrowserSettings.vpsUser
+        val host = BrowserSettings.vpsHost
+
+        // Получаем текущий каталог
+        val pwdResult = SshClient.execute("pwd")
+        val dir = if (pwdResult.isSuccess) pwdResult.getOrNull()?.trim() ?: "~" else "~"
+
+        // Сокращаем домашний каталог до ~
+        val shortDir = dir.replace("/home/$user", "~").replace("/root", "~")
+
+        currentPrompt = "$user@$host:$shortDir\$ "
+        updatePrompt()
+    }
+
+    private fun updatePrompt() {
+        commandInput.hint = currentPrompt
+    }
+
     private fun executeCommand(command: String) {
-        appendOutput("\n> $command")
+        appendOutput("$currentPrompt$command")
         progressBar.visibility = View.VISIBLE
 
         lifecycleScope.launch {
             val result = SshClient.execute(command)
             progressBar.visibility = View.GONE
 
-            result.onSuccess { appendOutput(it) }
-                .onFailure { appendOutput("Ошибка: ${it.message}") }
+            result.onSuccess { output ->
+                if (output.isNotEmpty()) {
+                    appendOutput(output)
+                }
+                // Обновляем приглашение после команды
+                updatePromptFromServer()
+            }.onFailure {
+                appendOutput("Ошибка: ${it.message}")
+                updatePromptFromServer()
+            }
         }
     }
 

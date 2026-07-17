@@ -3049,11 +3049,17 @@ id bottom
 id bounce
 id btnBack
 id btnConnect
+id btnCopy
+id btnCtrlC
+id btnEnter
+id btnEsc
 id btnForward
 id btnGo
+id btnPaste
 id btnSave
 id btnSend
 id btnSettings
+id btnTab
 id btnTerminal
 id buttonPanel
 id cancel_button
