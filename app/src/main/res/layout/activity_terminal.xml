@@ -16,6 +16,7 @@
         <Button
             android:id="@+id/btnConnect"
             android:layout_width="wrap_content"
+            android:minWidth="100dp"
             android:layout_height="wrap_content"
             android:text="⟳"
             android:textSize="12sp"
@@ -73,6 +74,7 @@
         <TextView
             android:id="@+id/promptLabel"
             android:layout_width="wrap_content"
+            android:minWidth="100dp"
             android:layout_height="wrap_content"
             android:text="oleg@vps:~$ "
             android:textColor="#00FF00"
