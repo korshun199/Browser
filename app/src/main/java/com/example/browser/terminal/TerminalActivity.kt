@@ -32,7 +32,7 @@ class TerminalActivity : AppCompatActivity() {
     private val vpsHost = "46.8.221.179"
     private val vpsPort = 4101
     private val vpsUser = "oleg"
-    private val sshKeyPath = "/sdcard/Documents/id_ed25519"
+    private val sshKeyPath = "/data/data/com.example.browser/files/ssh/id_ed25519"
 
     private val REQUEST_STORAGE = 1001
 
