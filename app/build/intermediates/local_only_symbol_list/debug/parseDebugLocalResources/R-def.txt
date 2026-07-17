@@ -3,8 +3,13 @@ local
 id btnBack
 id btnForward
 id btnGo
+id btnSave
+id btnSettings
+id etHomepage
+id spinnerSearch
 id urlBar
 id webView
 layout activity_main
+layout activity_settings
 string app_name
 xml network_security_config

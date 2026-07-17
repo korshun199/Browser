@@ -12,6 +12,7 @@ object BrowserSettings {
     private const val PREFS_NAME = "browser_prefs"
     private const val KEY_HOMEPAGE = "homepage"
     private const val KEY_SEARCH_ENGINE = "search_engine"
+    private const val KEY_AD_BLOCK = "ad_block"
 
     private lateinit var prefs: SharedPreferences
 
@@ -28,6 +29,11 @@ object BrowserSettings {
     var searchEngine: String
         get() = prefs.getString(KEY_SEARCH_ENGINE, "google") ?: "google"
         set(value) = prefs.edit().putString(KEY_SEARCH_ENGINE, value).apply()
+
+    // Блокировка рекламы: вкл/выкл
+    var adBlockEnabled: Boolean
+        get() = prefs.getBoolean(KEY_AD_BLOCK, true)
+        set(value) = prefs.edit().putBoolean(KEY_AD_BLOCK, value).apply()
 
     /**
      * Возвращает URL для поискового запроса.

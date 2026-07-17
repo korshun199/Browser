@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /home/work/Browser/app/src/main/AndroidManifest.xml:2:1-18:12
-INJECTED from /home/work/Browser/app/src/main/AndroidManifest.xml:2:1-18:12
-INJECTED from /home/work/Browser/app/src/main/AndroidManifest.xml:2:1-18:12
-INJECTED from /home/work/Browser/app/src/main/AndroidManifest.xml:2:1-18:12
+ADDED from /home/work/Browser/app/src/main/AndroidManifest.xml:2:1-21:12
+INJECTED from /home/work/Browser/app/src/main/AndroidManifest.xml:2:1-21:12
+INJECTED from /home/work/Browser/app/src/main/AndroidManifest.xml:2:1-21:12
+INJECTED from /home/work/Browser/app/src/main/AndroidManifest.xml:2:1-21:12
 MERGED from [com.google.android.material:material:1.10.0] /home/oleg/.gradle/caches/8.13/transforms/1acf4796e3c977ca0a1e7a726dc26086/transformed/material-1.10.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.appcompat:appcompat-resources:1.6.1] /home/oleg/.gradle/caches/8.13/transforms/9027b08c282ce58fdc6b624eac651f4a/transformed/appcompat-resources-1.6.1/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /home/oleg/.gradle/caches/8.13/transforms/af49951f9f5d05b35e0f65943e17f7fe/transformed/constraintlayout-2.0.1/AndroidManifest.xml:2:1-11:12
@@ -58,8 +58,8 @@ ADDED from /home/work/Browser/app/src/main/AndroidManifest.xml:3:5-67
 	android:name
 		ADDED from /home/work/Browser/app/src/main/AndroidManifest.xml:3:22-64
 application
-ADDED from /home/work/Browser/app/src/main/AndroidManifest.xml:4:5-17:19
-INJECTED from /home/work/Browser/app/src/main/AndroidManifest.xml:4:5-17:19
+ADDED from /home/work/Browser/app/src/main/AndroidManifest.xml:4:5-20:19
+INJECTED from /home/work/Browser/app/src/main/AndroidManifest.xml:4:5-20:19
 MERGED from [com.google.android.material:material:1.10.0] /home/oleg/.gradle/caches/8.13/transforms/1acf4796e3c977ca0a1e7a726dc26086/transformed/material-1.10.0/AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.10.0] /home/oleg/.gradle/caches/8.13/transforms/1acf4796e3c977ca0a1e7a726dc26086/transformed/material-1.10.0/AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /home/oleg/.gradle/caches/8.13/transforms/af49951f9f5d05b35e0f65943e17f7fe/transformed/constraintlayout-2.0.1/AndroidManifest.xml:9:5-20
@@ -104,6 +104,12 @@ category#android.intent.category.LAUNCHER
 ADDED from /home/work/Browser/app/src/main/AndroidManifest.xml:14:17-77
 	android:name
 		ADDED from /home/work/Browser/app/src/main/AndroidManifest.xml:14:27-74
+activity#com.example.browser.settings.SettingsActivity
+ADDED from /home/work/Browser/app/src/main/AndroidManifest.xml:17:9-19:41
+	android:label
+		ADDED from /home/work/Browser/app/src/main/AndroidManifest.xml:19:13-38
+	android:name
+		ADDED from /home/work/Browser/app/src/main/AndroidManifest.xml:18:13-54
 uses-sdk
 INJECTED from /home/work/Browser/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /home/work/Browser/app/src/main/AndroidManifest.xml
