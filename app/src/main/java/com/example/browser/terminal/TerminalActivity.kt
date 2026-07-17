@@ -23,12 +23,11 @@ import kotlinx.coroutines.launch
 class TerminalActivity : AppCompatActivity() {
     private lateinit var terminalOutput: TextView
     private lateinit var commandInput: EditText
+    private lateinit var promptLabel: TextView
     private lateinit var btnSend: Button
     private lateinit var btnConnect: Button
     private lateinit var progressBar: ProgressBar
     private lateinit var scrollView: ScrollView
-
-    private var currentPrompt = "oleg@vps:~$ "
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +35,7 @@ class TerminalActivity : AppCompatActivity() {
 
         terminalOutput = findViewById(R.id.terminalOutput)
         commandInput = findViewById(R.id.commandInput)
+        promptLabel = findViewById(R.id.promptLabel)
         btnSend = findViewById(R.id.btnSend)
         btnConnect = findViewById(R.id.btnConnect)
         progressBar = findViewById(R.id.progressBar)
@@ -47,8 +47,6 @@ class TerminalActivity : AppCompatActivity() {
         val btnCopy = findViewById<Button>(R.id.btnCopy)
         val btnPaste = findViewById<Button>(R.id.btnPaste)
         val btnEnter = findViewById<Button>(R.id.btnEnter)
-
-        updatePrompt()
 
         btnTab.setOnClickListener {
             val pos = commandInput.selectionStart
@@ -81,7 +79,6 @@ class TerminalActivity : AppCompatActivity() {
         btnSend.setOnClickListener { sendCommand() }
         btnConnect.setOnClickListener { connectToVps() }
 
-        // Запускаем команду по Enter с клавиатуры
         commandInput.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_SEND) {
                 sendCommand()
@@ -124,30 +121,20 @@ class TerminalActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Получает текущий каталог и пользователя с VPS для формирования приглашения.
-     */
     private suspend fun updatePromptFromServer() {
         val user = BrowserSettings.vpsUser
         val host = BrowserSettings.vpsHost
 
-        // Получаем текущий каталог
         val pwdResult = SshClient.execute("pwd")
         val dir = if (pwdResult.isSuccess) pwdResult.getOrNull()?.trim() ?: "~" else "~"
-
-        // Сокращаем домашний каталог до ~
         val shortDir = dir.replace("/home/$user", "~").replace("/root", "~")
 
-        currentPrompt = "$user@$host:$shortDir\$ "
-        updatePrompt()
-    }
-
-    private fun updatePrompt() {
-        commandInput.hint = currentPrompt
+        val prompt = "$user@$host:$shortDir\$ "
+        promptLabel.text = prompt
     }
 
     private fun executeCommand(command: String) {
-        appendOutput("$currentPrompt$command")
+        appendOutput("${promptLabel.text}$command")
         progressBar.visibility = View.VISIBLE
 
         lifecycleScope.launch {
@@ -158,7 +145,6 @@ class TerminalActivity : AppCompatActivity() {
                 if (output.isNotEmpty()) {
                     appendOutput(output)
                 }
-                // Обновляем приглашение после команды
                 updatePromptFromServer()
             }.onFailure {
                 appendOutput("Ошибка: ${it.message}")

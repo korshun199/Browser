@@ -6,7 +6,6 @@
     android:background="#1E1E1E"
     android:padding="8dp">
 
-    <!-- Панель подключения -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -39,7 +38,6 @@
             android:layout_marginStart="8dp" />
     </LinearLayout>
 
-    <!-- Вывод терминала -->
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
@@ -59,7 +57,7 @@
             android:gravity="bottom" />
     </ScrollView>
 
-    <!-- Панель ввода команды -->
+    <!-- Строка ввода с приглашением -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -72,14 +70,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Введи команду..."
+            android:hint="oleg@vps:~$ "
             android:textColor="#FFFFFF"
-            android:textColorHint="#888888"
+            android:textColorHint="#555555"
             android:background="#2A2A2A"
             android:inputType="text"
             android:singleLine="true"
             android:imeOptions="actionSend"
-            android:padding="8dp" />
+            android:padding="8dp"
+            android:textSize="12sp"
+            android:fontFamily="monospace" />
 
         <Button
             android:id="@+id/btnSend"
@@ -90,7 +90,7 @@
             android:layout_marginStart="2dp" />
     </LinearLayout>
 
-    <!-- Панель кнопок терминала -->
+    <!-- Панель кнопок -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -99,63 +99,11 @@
         android:layout_marginTop="4dp"
         android:padding="2dp">
 
-        <Button
-            android:id="@+id/btnTab"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Tab"
-            android:textSize="11sp"
-            android:minWidth="0dp" />
-
-        <Button
-            android:id="@+id/btnEsc"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Esc"
-            android:textSize="11sp"
-            android:minWidth="0dp"
-            android:layout_marginStart="2dp" />
-
-        <Button
-            android:id="@+id/btnCtrlC"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="C-c"
-            android:textSize="11sp"
-            android:minWidth="0dp"
-            android:layout_marginStart="2dp" />
-
-        <Button
-            android:id="@+id/btnCopy"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Коп"
-            android:textSize="11sp"
-            android:minWidth="0dp"
-            android:layout_marginStart="2dp" />
-
-        <Button
-            android:id="@+id/btnPaste"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Вст"
-            android:textSize="11sp"
-            android:minWidth="0dp"
-            android:layout_marginStart="2dp" />
-
-        <Button
-            android:id="@+id/btnEnter"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="↩"
-            android:textSize="14sp"
-            android:minWidth="0dp"
-            android:layout_marginStart="2dp" />
+        <Button android:id="@+id/btnTab" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Tab" android:textSize="11sp" android:minWidth="0dp" />
+        <Button android:id="@+id/btnEsc" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Esc" android:textSize="11sp" android:minWidth="0dp" android:layout_marginStart="2dp" />
+        <Button android:id="@+id/btnCtrlC" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="C-c" android:textSize="11sp" android:minWidth="0dp" android:layout_marginStart="2dp" />
+        <Button android:id="@+id/btnCopy" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Коп" android:textSize="11sp" android:minWidth="0dp" android:layout_marginStart="2dp" />
+        <Button android:id="@+id/btnPaste" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Вст" android:textSize="11sp" android:minWidth="0dp" android:layout_marginStart="2dp" />
+        <Button android:id="@+id/btnEnter" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="↩" android:textSize="14sp" android:minWidth="0dp" android:layout_marginStart="2dp" />
     </LinearLayout>
 </LinearLayout>
