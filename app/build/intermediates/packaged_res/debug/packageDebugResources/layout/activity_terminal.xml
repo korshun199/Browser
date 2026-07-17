@@ -50,7 +50,7 @@
             android:id="@+id/terminalOutput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Терминал VPS\n"
+            android:text=""
             android:textColor="#00FF00"
             android:textSize="12sp"
             android:fontFamily="monospace"
@@ -63,23 +63,36 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginTop="4dp">
+        android:layout_marginTop="4dp"
+        android:background="#2A2A2A"
+        android:paddingStart="8dp"
+        android:paddingEnd="2dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp">
+
+        <TextView
+            android:id="@+id/promptLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="oleg@vps:~$ "
+            android:textColor="#00FF00"
+            android:textSize="12sp"
+            android:fontFamily="monospace" />
 
         <EditText
             android:id="@+id/commandInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="oleg@vps:~$ "
             android:textColor="#FFFFFF"
-            android:textColorHint="#555555"
-            android:background="#2A2A2A"
+            android:background="@null"
             android:inputType="text"
             android:singleLine="true"
             android:imeOptions="actionSend"
-            android:padding="8dp"
+            android:padding="4dp"
             android:textSize="12sp"
-            android:fontFamily="monospace" />
+            android:fontFamily="monospace"
+            android:hint="" />
 
         <Button
             android:id="@+id/btnSend"

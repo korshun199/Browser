@@ -3,7 +3,11 @@ package com.example.browser.terminal
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -17,9 +21,6 @@ import com.example.browser.R
 import com.example.browser.settings.BrowserSettings
 import kotlinx.coroutines.launch
 
-/**
- * Экран терминала для управления VPS.
- */
 class TerminalActivity : AppCompatActivity() {
     private lateinit var terminalOutput: TextView
     private lateinit var commandInput: EditText
@@ -53,7 +54,6 @@ class TerminalActivity : AppCompatActivity() {
             commandInput.text.insert(pos, "\t")
             commandInput.setSelection(pos + 1)
         }
-
         btnEsc.setOnClickListener { executeCommand("\u001B") }
         btnCtrlC.setOnClickListener { executeCommand("\u0003") }
 
@@ -92,6 +92,10 @@ class TerminalActivity : AppCompatActivity() {
     private fun sendCommand() {
         val cmd = commandInput.text.toString().trim()
         if (cmd.isNotEmpty()) {
+            // Добавляем в вывод: зелёное приглашение + белая команда
+            val prompt = promptLabel.text.toString()
+            appendColoredLine(prompt, Color.GREEN)
+            appendColoredLine(cmd, Color.WHITE)
             executeCommand(cmd)
             commandInput.text.clear()
         }
@@ -103,7 +107,7 @@ class TerminalActivity : AppCompatActivity() {
         val user = BrowserSettings.vpsUser
         val keyPath = BrowserSettings.vpsKeyPath
 
-        appendOutput("Подключение к $host:$port...")
+        appendLine("Подключение к $host:$port...")
         progressBar.visibility = View.VISIBLE
         btnConnect.isEnabled = false
 
@@ -113,10 +117,10 @@ class TerminalActivity : AppCompatActivity() {
             btnConnect.isEnabled = true
 
             result.onSuccess {
-                appendOutput(it)
+                appendLine(it)
                 updatePromptFromServer()
             }.onFailure {
-                appendOutput("Ошибка подключения: ${it.message}")
+                appendLine("Ошибка подключения: ${it.message}")
             }
         }
     }
@@ -134,7 +138,6 @@ class TerminalActivity : AppCompatActivity() {
     }
 
     private fun executeCommand(command: String) {
-        appendOutput("${promptLabel.text}$command")
         progressBar.visibility = View.VISIBLE
 
         lifecycleScope.launch {
@@ -143,18 +146,25 @@ class TerminalActivity : AppCompatActivity() {
 
             result.onSuccess { output ->
                 if (output.isNotEmpty()) {
-                    appendOutput(output)
+                    appendLine(output)
                 }
                 updatePromptFromServer()
             }.onFailure {
-                appendOutput("Ошибка: ${it.message}")
+                appendLine("Ошибка: ${it.message}")
                 updatePromptFromServer()
             }
         }
     }
 
-    private fun appendOutput(text: String) {
+    private fun appendLine(text: String) {
         terminalOutput.append("$text\n")
+        scrollView.post { scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
+    }
+
+    private fun appendColoredLine(text: String, color: Int) {
+        val spannable = SpannableString("$text\n")
+        spannable.setSpan(ForegroundColorSpan(color), 0, spannable.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        terminalOutput.append(spannable)
         scrollView.post { scrollView.fullScroll(ScrollView.FOCUS_DOWN) }
     }
 

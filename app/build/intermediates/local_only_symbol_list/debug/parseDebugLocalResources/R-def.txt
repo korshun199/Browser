@@ -23,6 +23,7 @@ id etVpsKeyPath
 id etVpsPort
 id etVpsUser
 id progressBar
+id promptLabel
 id scrollView
 id spinnerSearch
 id swAdBlock

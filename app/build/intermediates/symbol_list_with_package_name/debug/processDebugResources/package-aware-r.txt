@@ -3302,6 +3302,7 @@ id pressed
 id progressBar
 id progress_circular
 id progress_horizontal
+id promptLabel
 id radio
 id ratio
 id rectangles
