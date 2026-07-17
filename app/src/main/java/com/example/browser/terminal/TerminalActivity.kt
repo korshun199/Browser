@@ -1,5 +1,8 @@
 package com.example.browser.terminal
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -7,7 +10,10 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.browser.R
 import kotlinx.coroutines.launch
@@ -23,11 +29,12 @@ class TerminalActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
     private lateinit var scrollView: ScrollView
 
-    // Настройки подключения (позже вынесем в BrowserSettings)
     private val vpsHost = "46.8.221.179"
     private val vpsPort = 4101
     private val vpsUser = "oleg"
     private val sshKeyPath = "/sdcard/id_ed25519"
+
+    private val REQUEST_STORAGE = 1001
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,16 +47,50 @@ class TerminalActivity : AppCompatActivity() {
         progressBar = findViewById(R.id.progressBar)
         scrollView = findViewById(R.id.scrollView)
 
-        // Подключение при открытии
-        connectToVps()
-
-        btnConnect.setOnClickListener { connectToVps() }
+        btnConnect.setOnClickListener {
+            checkPermissionAndConnect()
+        }
 
         btnSend.setOnClickListener {
             val cmd = commandInput.text.toString().trim()
             if (cmd.isNotEmpty()) {
                 executeCommand(cmd)
                 commandInput.text.clear()
+            }
+        }
+
+        // Запрашиваем разрешение при открытии
+        checkPermissionAndConnect()
+    }
+
+    private fun checkPermissionAndConnect() {
+        // На Android 13+ разрешение на чтение файлов не требуется для /sdcard
+        // Но проверим для старых версий
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                    REQUEST_STORAGE
+                )
+                return
+            }
+        }
+        connectToVps()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_STORAGE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                connectToVps()
+            } else {
+                appendOutput("Ошибка: нет доступа к файлам. Разреши доступ в настройках.")
             }
         }
     }
