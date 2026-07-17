@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnBack: Button
     private lateinit var btnForward: Button
     private lateinit var btnSettings: Button
+    private var settingsChanged = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,6 +96,7 @@ class MainActivity : AppCompatActivity() {
 
         // Кнопка Настройки
         btnSettings.setOnClickListener {
+            settingsChanged = true
             startActivity(Intent(this, SettingsActivity::class.java))
         }
     }
@@ -116,6 +118,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // При возврате из настроек обновляем настройки
+        // Если настройки менялись — перезагружаем текущую страницу для применения блокировки рекламы
+        if (settingsChanged) {
+            settingsChanged = false
+            webView.reload()
+        }
     }
 }
