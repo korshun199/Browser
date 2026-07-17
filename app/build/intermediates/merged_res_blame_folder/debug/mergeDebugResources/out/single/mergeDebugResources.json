@@ -1,22 +1,26 @@
 [
     {
-        "merged": "com.example.browser.app-debug-32:/layout_activity_main.xml.flat",
-        "source": "com.example.browser.app-main-34:/layout/activity_main.xml"
+        "merged": "/home/oleg/.gradle/daemon/8.13/com.example.browser.app-debug-32:/layout_activity_terminal.xml.flat",
+        "source": "/home/oleg/.gradle/daemon/8.13/com.example.browser.app-main-34:/layout/activity_terminal.xml"
     },
     {
         "merged": "com.example.browser.app-debug-32:/layout_activity_settings.xml.flat",
         "source": "com.example.browser.app-main-34:/layout/activity_settings.xml"
     },
     {
-        "merged": "com.example.browser.app-debug-32:/xml_network_security_config.xml.flat",
-        "source": "com.example.browser.app-main-34:/xml/network_security_config.xml"
+        "merged": "/home/oleg/.gradle/daemon/8.13/com.example.browser.app-debug-32:/raw_hosts.txt.flat",
+        "source": "/home/oleg/.gradle/daemon/8.13/com.example.browser.app-main-34:/raw/hosts.txt"
     },
     {
-        "merged": "com.example.browser.app-debug-32:/layout_activity_terminal.xml.flat",
-        "source": "com.example.browser.app-main-34:/layout/activity_terminal.xml"
+        "merged": "/home/oleg/.gradle/daemon/8.13/com.example.browser.app-debug-32:/layout_activity_settings.xml.flat",
+        "source": "/home/oleg/.gradle/daemon/8.13/com.example.browser.app-main-34:/layout/activity_settings.xml"
     },
     {
-        "merged": "com.example.browser.app-debug-32:/raw_hosts.txt.flat",
-        "source": "com.example.browser.app-main-34:/raw/hosts.txt"
+        "merged": "/home/oleg/.gradle/daemon/8.13/com.example.browser.app-debug-32:/layout_activity_main.xml.flat",
+        "source": "/home/oleg/.gradle/daemon/8.13/com.example.browser.app-main-34:/layout/activity_main.xml"
+    },
+    {
+        "merged": "/home/oleg/.gradle/daemon/8.13/com.example.browser.app-debug-32:/xml_network_security_config.xml.flat",
+        "source": "/home/oleg/.gradle/daemon/8.13/com.example.browser.app-main-34:/xml/network_security_config.xml"
     }
 ]

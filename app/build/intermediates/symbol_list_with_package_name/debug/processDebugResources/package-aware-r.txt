@@ -3127,6 +3127,10 @@ id endToStart
 id enterAlways
 id enterAlwaysCollapsed
 id etHomepage
+id etVpsHost
+id etVpsKeyPath
+id etVpsPort
+id etVpsUser
 id exitUntilCollapsed
 id expand_activities_button
 id expanded_menu

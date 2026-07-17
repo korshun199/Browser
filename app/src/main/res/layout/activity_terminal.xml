@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Макет экрана терминала VPS -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,21 +12,31 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="4dp">
 
         <Button
             android:id="@+id/btnConnect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="⟳ Подключиться"
-            android:textSize="12sp" />
+            android:text="⟳"
+            android:textSize="12sp"
+            android:minWidth="40dp" />
 
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="4dp"
             android:visibility="gone" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Терминал VPS"
+            android:textColor="#AAAAAA"
+            android:textSize="12sp"
+            android:layout_marginStart="8dp" />
     </LinearLayout>
 
     <!-- Вывод терминала -->
@@ -56,7 +65,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginTop="8dp">
+        android:layout_marginTop="4dp">
 
         <EditText
             android:id="@+id/commandInput"
@@ -74,10 +83,79 @@
 
         <Button
             android:id="@+id/btnSend"
-            android:layout_width="wrap_content"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:text="▶"
-            android:textSize="16sp"
-            android:layout_marginStart="4dp" />
+            android:textSize="14sp"
+            android:layout_marginStart="2dp" />
+    </LinearLayout>
+
+    <!-- Панель кнопок терминала -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="4dp"
+        android:padding="2dp">
+
+        <Button
+            android:id="@+id/btnTab"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Tab"
+            android:textSize="11sp"
+            android:minWidth="0dp" />
+
+        <Button
+            android:id="@+id/btnEsc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Esc"
+            android:textSize="11sp"
+            android:minWidth="0dp"
+            android:layout_marginStart="2dp" />
+
+        <Button
+            android:id="@+id/btnCtrlC"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="C-c"
+            android:textSize="11sp"
+            android:minWidth="0dp"
+            android:layout_marginStart="2dp" />
+
+        <Button
+            android:id="@+id/btnCopy"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Коп"
+            android:textSize="11sp"
+            android:minWidth="0dp"
+            android:layout_marginStart="2dp" />
+
+        <Button
+            android:id="@+id/btnPaste"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Вст"
+            android:textSize="11sp"
+            android:minWidth="0dp"
+            android:layout_marginStart="2dp" />
+
+        <Button
+            android:id="@+id/btnEnter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="↩"
+            android:textSize="14sp"
+            android:minWidth="0dp"
+            android:layout_marginStart="2dp" />
     </LinearLayout>
 </LinearLayout>

@@ -1,61 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Макет экрана настроек -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Домашняя страница -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Домашняя страница:"
-        android:textSize="16sp"
-        android:layout_marginBottom="4dp" />
-
-    <EditText
-        android:id="@+id/etHomepage"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="https://ya.ru"
-        android:inputType="textUri"
-        android:singleLine="true"
-        android:layout_marginBottom="16dp" />
+        android:orientation="vertical">
 
-    <!-- Поисковик по умолчанию -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Поисковик по умолчанию:"
-        android:textSize="16sp"
-        android:layout_marginBottom="4dp" />
+        <!-- Домашняя страница -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Домашняя страница:"
+            android:textSize="16sp"
+            android:layout_marginBottom="4dp" />
+        <EditText
+            android:id="@+id/etHomepage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="https://ya.ru"
+            android:inputType="textUri"
+            android:singleLine="true"
+            android:layout_marginBottom="16dp" />
 
-    <Spinner
-        android:id="@+id/spinnerSearch"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp" />
+        <!-- Поисковик -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Поисковик по умолчанию:"
+            android:textSize="16sp"
+            android:layout_marginBottom="4dp" />
+        <Spinner
+            android:id="@+id/spinnerSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp" />
 
-    <!-- Блокировка рекламы -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Блокировка рекламы:"
-        android:textSize="16sp"
-        android:layout_marginBottom="4dp" />
+        <!-- Блокировка рекламы -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Блокировка рекламы:"
+            android:textSize="16sp"
+            android:layout_marginBottom="4dp" />
+        <Switch
+            android:id="@+id/swAdBlock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Включить блокировку рекламы"
+            android:layout_marginBottom="24dp" />
 
-    <Switch
-        android:id="@+id/swAdBlock"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Включить блокировку рекламы"
-        android:layout_marginBottom="24dp" />
+        <!-- Раздел VPS -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="── Настройки VPS ──"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
 
-    <!-- Кнопка Сохранить -->
-    <Button
-        android:id="@+id/btnSave"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Сохранить" />
-</LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="IP или хост:"
+            android:textSize="14sp" />
+        <EditText
+            android:id="@+id/etVpsHost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="46.8.221.179"
+            android:inputType="text"
+            android:singleLine="true"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Порт:"
+            android:textSize="14sp" />
+        <EditText
+            android:id="@+id/etVpsPort"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="4101"
+            android:inputType="number"
+            android:singleLine="true"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Пользователь:"
+            android:textSize="14sp" />
+        <EditText
+            android:id="@+id/etVpsUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="oleg"
+            android:inputType="text"
+            android:singleLine="true"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Путь к SSH-ключу:"
+            android:textSize="14sp" />
+        <EditText
+            android:id="@+id/etVpsKeyPath"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="/data/data/com.example.browser/files/ssh/id_rsa"
+            android:inputType="text"
+            android:singleLine="true"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Кнопка Сохранить -->
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Сохранить" />
+    </LinearLayout>
+</ScrollView>

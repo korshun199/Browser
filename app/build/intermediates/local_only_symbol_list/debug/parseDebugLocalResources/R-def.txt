@@ -12,6 +12,10 @@ id commandInput
 id consoleOutput
 id consoleScroll
 id etHomepage
+id etVpsHost
+id etVpsKeyPath
+id etVpsPort
+id etVpsUser
 id progressBar
 id scrollView
 id spinnerSearch
