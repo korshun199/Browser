@@ -3,6 +3,7 @@ package com.example.browser.adblock
 import android.content.Context
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
+import com.example.browser.R
 import java.io.BufferedReader
 import java.io.InputStreamReader
 

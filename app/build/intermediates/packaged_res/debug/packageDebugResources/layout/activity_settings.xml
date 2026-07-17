@@ -37,6 +37,21 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp" />
 
+    <!-- Блокировка рекламы -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Блокировка рекламы:"
+        android:textSize="16sp"
+        android:layout_marginBottom="4dp" />
+
+    <Switch
+        android:id="@+id/swAdBlock"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Включить блокировку рекламы"
+        android:layout_marginBottom="24dp" />
+
     <!-- Кнопка Сохранить -->
     <Button
         android:id="@+id/btnSave"

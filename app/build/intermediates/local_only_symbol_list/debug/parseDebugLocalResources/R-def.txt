@@ -7,9 +7,11 @@ id btnSave
 id btnSettings
 id etHomepage
 id spinnerSearch
+id swAdBlock
 id urlBar
 id webView
 layout activity_main
 layout activity_settings
+raw hosts
 string app_name
 xml network_security_config
