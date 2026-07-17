@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.webkit.ConsoleMessage
@@ -107,6 +108,13 @@ class MainActivity : AppCompatActivity() {
 
         webView.loadUrl(BrowserSettings.homepage)
 
+        // Показываем клавиатуру при клике на адресную строку
+        urlBar.setOnClickListener {
+            urlBar.requestFocus()
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.showSoftInput(urlBar, InputMethodManager.SHOW_IMPLICIT)
+        }
+
         btnGo.setOnClickListener { loadUrlFromBar() }
 
         urlBar.setOnEditorActionListener { _, actionId, _ ->
@@ -116,11 +124,9 @@ class MainActivity : AppCompatActivity() {
             } else false
         }
 
-        // Клик по WebView убирает фокус с адресной строки и скрывает клавиатуру
-        webView.setOnTouchListener { _, _ ->
+        // Клик по пустому месту или WebView скрывает клавиатуру
+        webView.setOnClickListener {
             hideKeyboard()
-            webView.requestFocus()
-            false
         }
 
         btnBack.setOnClickListener { if (webView.canGoBack()) webView.goBack() }
@@ -132,8 +138,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         consoleOutput.setOnClickListener {
-            consoleScroll.visibility = if (consoleScroll.visibility == android.view.View.VISIBLE)
-                android.view.View.GONE else android.view.View.VISIBLE
+            consoleScroll.visibility = if (consoleScroll.visibility == View.VISIBLE)
+                View.GONE else View.VISIBLE
         }
     }
 
@@ -146,7 +152,6 @@ class MainActivity : AppCompatActivity() {
         }
         webView.loadUrl(input)
         hideKeyboard()
-        webView.requestFocus()
     }
 
     private fun hideKeyboard() {
