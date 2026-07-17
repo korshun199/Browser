@@ -49,6 +49,14 @@
             android:layout_height="wrap_content"
             android:text="Go"
             android:minWidth="48dp" />
+
+        <!-- Кнопка Настройки -->
+        <Button
+            android:id="@+id/btnSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⚙"
+            android:minWidth="48dp" />
     </LinearLayout>
 
     <!-- Сам WebView -->

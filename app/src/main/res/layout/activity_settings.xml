@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Макет экрана настроек -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Домашняя страница -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Домашняя страница:"
+        android:textSize="16sp"
+        android:layout_marginBottom="4dp" />
+
+    <EditText
+        android:id="@+id/etHomepage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="https://ya.ru"
+        android:inputType="textUri"
+        android:singleLine="true"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Поисковик по умолчанию -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Поисковик по умолчанию:"
+        android:textSize="16sp"
+        android:layout_marginBottom="4dp" />
+
+    <Spinner
+        android:id="@+id/spinnerSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Кнопка Сохранить -->
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Сохранить" />
+</LinearLayout>

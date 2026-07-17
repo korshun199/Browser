@@ -1,5 +1,6 @@
 package com.example.browser
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import android.webkit.WebView
@@ -7,6 +8,8 @@ import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import com.example.browser.settings.BrowserSettings
+import com.example.browser.settings.SettingsActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var webView: WebView
@@ -14,10 +17,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnGo: Button
     private lateinit var btnBack: Button
     private lateinit var btnForward: Button
+    private lateinit var btnSettings: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // Инициализация настроек (модуль)
+        BrowserSettings.init(this)
 
         // Привязка элементов интерфейса
         webView = findViewById(R.id.webView)
@@ -25,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         btnGo = findViewById(R.id.btnGo)
         btnBack = findViewById(R.id.btnBack)
         btnForward = findViewById(R.id.btnForward)
+        btnSettings = findViewById(R.id.btnSettings)
 
         // Настройка WebView
         webView.settings.javaScriptEnabled = true
@@ -37,8 +45,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Загрузка стартовой страницы (позже настраивается в настройках)
-        webView.loadUrl("about:blank")
+        // Загрузка домашней страницы из настроек
+        webView.loadUrl(BrowserSettings.homepage)
 
         // Кнопка Перейти — загружает URL из адресной строки
         btnGo.setOnClickListener {
@@ -68,12 +76,17 @@ class MainActivity : AppCompatActivity() {
                 webView.goForward()
             }
         }
+
+        // Кнопка Настройки
+        btnSettings.setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
     }
 
     /**
      * Загружает URL из адресной строки.
      * Если пользователь не указал протокол, добавляет https://.
-     * Если введён поисковый запрос (содержит пробелы или не является URL), ищет через Google.
+     * Если введён поисковый запрос, использует поисковик из настроек.
      */
     private fun loadUrlFromBar() {
         var input = urlBar.text.toString().trim()
@@ -83,12 +96,18 @@ class MainActivity : AppCompatActivity() {
         if (!input.startsWith("http://") && !input.startsWith("https://")) {
             // Если есть пробелы или нет точки — считаем поисковым запросом
             if (input.contains(" ") || !input.contains(".")) {
-                input = "https://www.google.com/search?q=${input.replace(" ", "+")}"
+                input = BrowserSettings.getSearchUrl(input)
             } else {
                 input = "https://$input"
             }
         }
 
         webView.loadUrl(input)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // При возврате из настроек обновляем домашнюю страницу, если нужно
+        // (не перезагружаем автоматически, просто применяем новые настройки при следующей загрузке)
     }
 }
