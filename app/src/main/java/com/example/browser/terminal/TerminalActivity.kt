@@ -1,8 +1,5 @@
 package com.example.browser.terminal
 
-import android.Manifest
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -10,16 +7,15 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.browser.R
+import com.example.browser.settings.BrowserSettings
 import kotlinx.coroutines.launch
 
 /**
  * Экран терминала для управления VPS.
+ * Настройки подключения берутся из BrowserSettings.
  */
 class TerminalActivity : AppCompatActivity() {
     private lateinit var terminalOutput: TextView
@@ -28,13 +24,6 @@ class TerminalActivity : AppCompatActivity() {
     private lateinit var btnConnect: Button
     private lateinit var progressBar: ProgressBar
     private lateinit var scrollView: ScrollView
-
-    private val vpsHost = "46.8.221.179"
-    private val vpsPort = 4101
-    private val vpsUser = "oleg"
-    private val sshKeyPath = "/data/data/com.example.browser/files/ssh/id_rsa"
-
-    private val REQUEST_STORAGE = 1001
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,10 +36,7 @@ class TerminalActivity : AppCompatActivity() {
         progressBar = findViewById(R.id.progressBar)
         scrollView = findViewById(R.id.scrollView)
 
-        btnConnect.setOnClickListener {
-            checkPermissionAndConnect()
-        }
-
+        btnConnect.setOnClickListener { connectToVps() }
         btnSend.setOnClickListener {
             val cmd = commandInput.text.toString().trim()
             if (cmd.isNotEmpty()) {
@@ -59,49 +45,21 @@ class TerminalActivity : AppCompatActivity() {
             }
         }
 
-        // Запрашиваем разрешение при открытии
-        checkPermissionAndConnect()
-    }
-
-    private fun checkPermissionAndConnect() {
-        // На Android 13+ разрешение на чтение файлов не требуется для /sdcard
-        // Но проверим для старых версий
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                    REQUEST_STORAGE
-                )
-                return
-            }
-        }
         connectToVps()
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_STORAGE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                connectToVps()
-            } else {
-                appendOutput("Ошибка: нет доступа к файлам. Разреши доступ в настройках.")
-            }
-        }
-    }
-
     private fun connectToVps() {
-        appendOutput("Подключение к $vpsHost:$vpsPort...")
+        val host = BrowserSettings.vpsHost
+        val port = BrowserSettings.vpsPort
+        val user = BrowserSettings.vpsUser
+        val keyPath = BrowserSettings.vpsKeyPath
+
+        appendOutput("Подключение к $host:$port...")
         progressBar.visibility = View.VISIBLE
         btnConnect.isEnabled = false
 
         lifecycleScope.launch {
-            val result = SshClient.connect(vpsHost, vpsPort, vpsUser, sshKeyPath)
+            val result = SshClient.connect(host, port, user, keyPath)
             progressBar.visibility = View.GONE
             btnConnect.isEnabled = true
 
@@ -124,11 +82,8 @@ class TerminalActivity : AppCompatActivity() {
             progressBar.visibility = View.GONE
             btnSend.isEnabled = true
 
-            result.onSuccess {
-                appendOutput(it)
-            }.onFailure {
-                appendOutput("Ошибка: ${it.message}")
-            }
+            result.onSuccess { appendOutput(it) }
+                .onFailure { appendOutput("Ошибка: ${it.message}") }
         }
     }
 
@@ -139,8 +94,6 @@ class TerminalActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        lifecycleScope.launch {
-            SshClient.disconnect()
-        }
+        lifecycleScope.launch { SshClient.disconnect() }
     }
 }
