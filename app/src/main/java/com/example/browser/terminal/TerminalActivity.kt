@@ -133,7 +133,7 @@ class TerminalActivity : AppCompatActivity() {
         val dir = if (pwdResult.isSuccess) pwdResult.getOrNull()?.trim() ?: "~" else "~"
         val shortDir = dir.replace("/home/$user", "~").replace("/root", "~")
 
-        val prompt = "$user@$host:$shortDir\$ "
+        val prompt = "$shortDir\$ "
         promptLabel.text = prompt
     }
 

@@ -16,7 +16,6 @@
         <Button
             android:id="@+id/btnConnect"
             android:layout_width="wrap_content"
-            android:minWidth="100dp"
             android:layout_height="wrap_content"
             android:text="⟳"
             android:textSize="12sp"
@@ -58,7 +57,7 @@
             android:fontFamily="monospace" />
     </ScrollView>
 
-    <!-- Строка ввода: зелёное приглашение + поле ввода -->
+    <!-- Строка ввода: приглашение + поле + кнопка -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -66,15 +65,11 @@
         android:gravity="center_vertical"
         android:layout_marginTop="4dp"
         android:background="#2A2A2A"
-        android:paddingStart="8dp"
-        android:paddingEnd="2dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp">
+        android:padding="4dp">
 
         <TextView
             android:id="@+id/promptLabel"
             android:layout_width="wrap_content"
-            android:minWidth="100dp"
             android:layout_height="wrap_content"
             android:text="oleg@vps:~$ "
             android:textColor="#00FF00"
@@ -103,7 +98,8 @@
             android:layout_height="wrap_content"
             android:text="▶"
             android:textSize="14sp"
-            android:layout_marginStart="2dp" />
+            android:layout_marginStart="4dp"
+            android:minWidth="0dp" />
     </LinearLayout>
 
     <!-- Панель кнопок -->
