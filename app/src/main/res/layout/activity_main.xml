@@ -52,6 +52,13 @@
             android:layout_height="wrap_content"
             android:text="⚙"
             android:minWidth="48dp" />
+
+        <Button
+            android:id="@+id/btnTerminal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=">_"
+            android:minWidth="48dp" />
     </LinearLayout>
 
     <WebView

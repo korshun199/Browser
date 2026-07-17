@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.browser.adblock.AdBlocker
 import com.example.browser.settings.BrowserSettings
 import com.example.browser.settings.SettingsActivity
+import com.example.browser.terminal.TerminalActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var webView: WebView
@@ -31,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnBack: Button
     private lateinit var btnForward: Button
     private lateinit var btnSettings: Button
+    private lateinit var btnTerminal: Button
     private lateinit var consoleOutput: TextView
     private lateinit var consoleScroll: ScrollView
     private var settingsChanged = false
@@ -48,6 +50,7 @@ class MainActivity : AppCompatActivity() {
         btnBack = findViewById(R.id.btnBack)
         btnForward = findViewById(R.id.btnForward)
         btnSettings = findViewById(R.id.btnSettings)
+        btnTerminal = findViewById(R.id.btnTerminal)
         consoleOutput = findViewById(R.id.consoleOutput)
         consoleScroll = findViewById(R.id.consoleScroll)
 
@@ -108,7 +111,6 @@ class MainActivity : AppCompatActivity() {
 
         webView.loadUrl(BrowserSettings.homepage)
 
-        // Показываем клавиатуру при клике на адресную строку
         urlBar.setOnClickListener {
             urlBar.requestFocus()
             val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
@@ -124,10 +126,7 @@ class MainActivity : AppCompatActivity() {
             } else false
         }
 
-        // Клик по пустому месту или WebView скрывает клавиатуру
-        webView.setOnClickListener {
-            hideKeyboard()
-        }
+        webView.setOnClickListener { hideKeyboard() }
 
         btnBack.setOnClickListener { if (webView.canGoBack()) webView.goBack() }
         btnForward.setOnClickListener { if (webView.canGoForward()) webView.goForward() }
@@ -135,6 +134,10 @@ class MainActivity : AppCompatActivity() {
         btnSettings.setOnClickListener {
             settingsChanged = true
             startActivity(Intent(this, SettingsActivity::class.java))
+        }
+
+        btnTerminal.setOnClickListener {
+            startActivity(Intent(this, TerminalActivity::class.java))
         }
 
         consoleOutput.setOnClickListener {
