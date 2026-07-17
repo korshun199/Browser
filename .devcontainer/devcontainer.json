@@ -1,0 +1,23 @@
+{
+    "name": "Android Browser Dev",
+    "image": "mcr.microsoft.com/devcontainers/universal:2-linux",
+    "features": {
+        "ghcr.io/devcontainers/features/java:1": {
+            "version": "17",
+            "installGradle": "true"
+        },
+        "ghcr.io/devcontainers/features/android-sdk:1": {
+            "platform": "34",
+            "buildTools": "34.0.0"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-azuretools.vscode-docker"
+            ]
+        }
+    },
+    "postCreateCommand": "echo 'export ANDROID_HOME=/usr/local/lib/android/sdk' >> ~/.bashrc && echo 'export ANDROID_SDK_ROOT=/usr/local/lib/android/sdk' >> ~/.bashrc && yes | sdkmanager 'platforms;android-34' 'build-tools;34.0.0' && gradle wrapper --gradle-version 8.13",
+    "remoteUser": "vscode"
+}
