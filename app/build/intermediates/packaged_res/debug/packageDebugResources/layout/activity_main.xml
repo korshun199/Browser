@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Основной макет браузера: адресная строка, WebView, консоль ошибок JS -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:focusable="true"
     android:focusableInTouchMode="true">
 
-    <!-- Панель навигации -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="4dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:descendantFocusability="beforeDescendants">
 
         <Button
             android:id="@+id/btnBack"
@@ -39,8 +41,7 @@
             android:inputType="textUri"
             android:singleLine="true"
             android:imeOptions="actionGo"
-            android:focusable="true"
-            android:focusableInTouchMode="true" />
+            android:focusableInTouchMode="false" />
 
         <Button
             android:id="@+id/btnGo"
@@ -57,14 +58,12 @@
             android:minWidth="48dp" />
     </LinearLayout>
 
-    <!-- WebView -->
     <WebView
         android:id="@+id/webView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <!-- Консоль ошибок JS (цветная) -->
     <ScrollView
         android:id="@+id/consoleScroll"
         android:layout_width="match_parent"

@@ -116,6 +116,14 @@ class MainActivity : AppCompatActivity() {
             } else false
         }
 
+        // При фокусе на адресной строке — показываем клавиатуру
+        urlBar.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.showSoftInput(urlBar, InputMethodManager.SHOW_IMPLICIT)
+            }
+        }
+
         btnBack.setOnClickListener { if (webView.canGoBack()) webView.goBack() }
         btnForward.setOnClickListener { if (webView.canGoForward()) webView.goForward() }
 
@@ -129,9 +137,8 @@ class MainActivity : AppCompatActivity() {
                 android.view.View.GONE else android.view.View.VISIBLE
         }
 
-        // Принудительно убираем клавиатуру и переводим фокус на WebView
+        // При старте фокус на WebView — клавиатура не появляется
         webView.requestFocus()
-        hideKeyboard()
     }
 
     private fun loadUrlFromBar() {
@@ -142,12 +149,10 @@ class MainActivity : AppCompatActivity() {
                 BrowserSettings.getSearchUrl(input) else "https://$input"
         }
         webView.loadUrl(input)
-        hideKeyboard()
-    }
-
-    private fun hideKeyboard() {
+        // Скрываем клавиатуру после перехода
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(window.decorView.windowToken, 0)
+        webView.requestFocus()
     }
 
     override fun onResume() {
