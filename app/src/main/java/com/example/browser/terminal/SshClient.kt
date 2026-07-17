@@ -6,6 +6,7 @@ import com.jcraft.jsch.Session
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
+import java.io.InputStream
 
 /**
  * Модуль SSH-подключения к VPS.
@@ -48,21 +49,14 @@ object SshClient {
             val channel = s.openChannel("exec") as ChannelExec
             channel.setCommand(command)
 
-            val outputStream = ByteArrayOutputStream()
-            val errorStream = ByteArrayOutputStream()
-            channel.outputStream = outputStream
-            channel.errStream = errorStream
+            val inputStream: InputStream = channel.inputStream
+            val errorStream: InputStream = channel.errStream
 
             channel.connect(15000)
 
-            // Ждём завершения
-            while (!channel.isClosed) {
-                Thread.sleep(100)
-            }
-
-            val output = outputStream.toString().trim()
-            val error = errorStream.toString().trim()
-            val exitCode = channel.exitStatus
+            // Читаем вывод
+            val output = inputStream.bufferedReader().readText().trim()
+            val error = errorStream.bufferedReader().readText().trim()
 
             channel.disconnect()
 
@@ -72,7 +66,7 @@ object SshClient {
                     if (isNotEmpty()) append("\n")
                     append("STDERR: $error")
                 }
-                if (isEmpty()) append("(пустой вывод, код $exitCode)")
+                if (isEmpty()) append("(пустой вывод)")
             }
             Result.success(result)
         } catch (e: Exception) {
