@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.browser.app-mergeDebugResources-29:/values-sr/values-sr.xml",
+            "outputFile": "com.example.browser.app-mergeDebugResources-30:/values-sr/values-sr.xml",
             "map": [
                 {
                     "source": "/home/oleg/.gradle/caches/8.13/transforms/4d425d324b20b89615746b96c43519b3/transformed/core-1.12.0/res/values-sr/values-sr.xml",

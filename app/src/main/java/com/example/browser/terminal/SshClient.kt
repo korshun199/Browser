@@ -1,12 +1,11 @@
 package com.example.browser.terminal
 
+import com.jcraft.jsch.ChannelExec
 import com.jcraft.jsch.JSch
 import com.jcraft.jsch.Session
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
-import java.io.PipedInputStream
-import java.io.PipedOutputStream
 
 /**
  * Модуль SSH-подключения к VPS.
@@ -25,13 +24,13 @@ object SshClient {
         keyPath: String
     ): Result<String> = withContext(Dispatchers.IO) {
         try {
-            disconnect() // Закрываем предыдущую сессию, если была
+            disconnect()
             val jsch = JSch()
             jsch.addIdentity(keyPath)
-            jsch.setKnownHosts("/sdcard/known_hosts")
 
             session = jsch.getSession(user, host, port)
             session?.setConfig("StrictHostKeyChecking", "no")
+            session?.setConfig("PreferredAuthentications", "publickey")
             session?.connect(10000)
             Result.success("Подключено к $host")
         } catch (e: Exception) {
@@ -45,23 +44,25 @@ object SshClient {
     suspend fun execute(command: String): Result<String> = withContext(Dispatchers.IO) {
         try {
             val s = session ?: return@withContext Result.failure(Exception("Нет подключения"))
-            val channel = s.openChannel("exec")
+
+            val channel = s.openChannel("exec") as ChannelExec
             channel.setCommand(command)
 
             val outputStream = ByteArrayOutputStream()
             val errorStream = ByteArrayOutputStream()
-            channel.setOutputStream(outputStream)
-            channel.setErrStream(errorStream)
+            channel.outputStream = outputStream
+            channel.errStream = errorStream
 
             channel.connect(15000)
 
-            // Ждём завершения команды
+            // Ждём завершения
             while (!channel.isClosed) {
                 Thread.sleep(100)
             }
 
             val output = outputStream.toString().trim()
             val error = errorStream.toString().trim()
+            val exitCode = channel.exitStatus
 
             channel.disconnect()
 
@@ -71,7 +72,7 @@ object SshClient {
                     if (isNotEmpty()) append("\n")
                     append("STDERR: $error")
                 }
-                if (isEmpty()) append("(пустой вывод)")
+                if (isEmpty()) append("(пустой вывод, код $exitCode)")
             }
             Result.success(result)
         } catch (e: Exception) {
