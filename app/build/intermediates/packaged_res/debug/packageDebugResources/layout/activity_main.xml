@@ -3,7 +3,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:focusableInTouchMode="true">
 
     <!-- Панель навигации -->
     <LinearLayout
@@ -37,7 +38,9 @@
             android:hint="Введите адрес или поиск"
             android:inputType="textUri"
             android:singleLine="true"
-            android:imeOptions="actionGo" />
+            android:imeOptions="actionGo"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
 
         <Button
             android:id="@+id/btnGo"
@@ -61,13 +64,13 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <!-- Консоль ошибок JS -->
+    <!-- Консоль ошибок JS (цветная) -->
     <ScrollView
         android:id="@+id/consoleScroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxHeight="120dp"
-        android:background="#F8F8F8"
+        android:background="#1E1E1E"
         android:padding="4dp"
         android:visibility="visible">
 
@@ -75,9 +78,9 @@
             android:id="@+id/consoleOutput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Консоль JS:"
+            android:text="Консоль JS"
             android:textSize="11sp"
-            android:textColor="#333333"
+            android:textColor="#AAAAAA"
             android:fontFamily="monospace"
             android:gravity="bottom" />
     </ScrollView>

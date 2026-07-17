@@ -5,8 +5,6 @@ import android.content.SharedPreferences
 
 /**
  * Модуль настроек браузера.
- * Хранит параметры в SharedPreferences.
- * При добавлении новых настроек — дополняем этот класс.
  */
 object BrowserSettings {
     private const val PREFS_NAME = "browser_prefs"
@@ -20,24 +18,19 @@ object BrowserSettings {
         prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     }
 
-    // Домашняя страница (по умолчанию about:blank)
     var homepage: String
         get() = prefs.getString(KEY_HOMEPAGE, "about:blank") ?: "about:blank"
         set(value) = prefs.edit().putString(KEY_HOMEPAGE, value).apply()
 
-    // Поисковик: google, yandex, duckduckgo
     var searchEngine: String
         get() = prefs.getString(KEY_SEARCH_ENGINE, "google") ?: "google"
         set(value) = prefs.edit().putString(KEY_SEARCH_ENGINE, value).apply()
 
-    // Блокировка рекламы: вкл/выкл
+    // Блокировка рекламы по умолчанию выключена
     var adBlockEnabled: Boolean
-        get() = prefs.getBoolean(KEY_AD_BLOCK, true)
+        get() = prefs.getBoolean(KEY_AD_BLOCK, false)
         set(value) = prefs.edit().putBoolean(KEY_AD_BLOCK, value).apply()
 
-    /**
-     * Возвращает URL для поискового запроса.
-     */
     fun getSearchUrl(query: String): String {
         return when (searchEngine) {
             "yandex" -> "https://yandex.ru/search/?text=${query.replace(" ", "+")}"
