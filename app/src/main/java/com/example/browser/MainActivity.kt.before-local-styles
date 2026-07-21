@@ -3,8 +3,6 @@ package com.example.browser
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
@@ -74,10 +72,10 @@ class MainActivity : AppCompatActivity() {
                 url?.let { urlBar.setText(it) }
                 consoleOutput.text = "Консоль JS"
 
-                // Даём странице закончить собственные сценарии, затем применяем выбранный режим.
-                Handler(Looper.getMainLooper()).postDelayed({
-                    applySelectedStyleToPage()
-                }, 350)
+                // Пока стилизация не подключена к ИИ, только фиксируем выбранный режим.
+                if (selectedStyle != PageStyle.ORIGINAL) {
+                    appendConsole("СТИЛЬ", "Выбран режим: ${selectedStyle.title}", Color.GRAY)
+                }
             }
 
             override fun shouldInterceptRequest(
@@ -190,184 +188,6 @@ class MainActivity : AppCompatActivity() {
         }
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
         appendConsole("СТИЛЬ", message, Color.GRAY)
-        applySelectedStyleToPage()
-    }
-
-    private fun applySelectedStyleToPage() {
-        val styleName = selectedStyle.name
-
-        val script = """
-            (function () {
-                const STYLE = '$styleName';
-                const BADGE_ID = 'browser-style-badge';
-
-                function removeBadge() {
-                    const badge = document.getElementById(BADGE_ID);
-                    if (badge) badge.remove();
-                }
-
-                function showBadge(title) {
-                    removeBadge();
-
-                    const badge = document.createElement('div');
-                    badge.id = BADGE_ID;
-                    badge.textContent = 'Тестовый локальный стиль: ' + title;
-                    badge.style.position = 'fixed';
-                    badge.style.left = '10px';
-                    badge.style.bottom = '10px';
-                    badge.style.zIndex = '2147483647';
-                    badge.style.padding = '7px 10px';
-                    badge.style.borderRadius = '8px';
-                    badge.style.background = 'rgba(25,25,25,.88)';
-                    badge.style.color = '#fff';
-                    badge.style.font = '13px sans-serif';
-                    badge.style.boxShadow = '0 2px 8px rgba(0,0,0,.35)';
-                    document.documentElement.appendChild(badge);
-                }
-
-                function collectTextNodes() {
-                    if (window.__browserStyleNodes) return window.__browserStyleNodes;
-
-                    const allowed = new Set([
-                        'P', 'LI', 'BLOCKQUOTE',
-                        'H1', 'H2', 'H3', 'H4',
-                        'TD', 'TH', 'FIGCAPTION'
-                    ]);
-
-                    const nodes = [];
-                    const walker = document.createTreeWalker(
-                        document.body,
-                        NodeFilter.SHOW_TEXT,
-                        {
-                            acceptNode(node) {
-                                const parent = node.parentElement;
-                                if (!parent || !allowed.has(parent.tagName)) {
-                                    return NodeFilter.FILTER_REJECT;
-                                }
-
-                                const value = node.nodeValue || '';
-                                if (value.trim().length < 35) {
-                                    return NodeFilter.FILTER_REJECT;
-                                }
-
-                                return NodeFilter.FILTER_ACCEPT;
-                            }
-                        }
-                    );
-
-                    let node;
-                    while ((node = walker.nextNode())) {
-                        nodes.push({
-                            node: node,
-                            original: node.nodeValue
-                        });
-                    }
-
-                    window.__browserStyleNodes = nodes;
-                    return nodes;
-                }
-
-                function restore() {
-                    const nodes = collectTextNodes();
-                    nodes.forEach(item => {
-                        if (item.node && item.node.isConnected) {
-                            item.node.nodeValue = item.original;
-                        }
-                    });
-                    removeBadge();
-                    return nodes.length;
-                }
-
-                function preserveOuterSpaces(source, changed) {
-                    const left = (source.match(/^\\s*/) || [''])[0];
-                    const right = (source.match(/\\s*$/) || [''])[0];
-                    return left + changed.trim() + right;
-                }
-
-                function army(source) {
-                    let value = source
-                        .replace(/в целях/gi, 'чтобы')
-                        .replace(/необходимо осуществить/gi, 'нужно')
-                        .replace(/необходимо/gi, 'нужно')
-                        .replace(/следует произвести/gi, 'сделай')
-                        .replace(/осуществляется/gi, 'делается')
-                        .replace(/осуществить/gi, 'сделать')
-                        .replace(/посредством/gi, 'через')
-                        .replace(/в случае возникновения/gi, 'если возникнет')
-                        .replace(/настоящий документ/gi, 'этот документ')
-                        .replace(/данный/gi, 'этот')
-                        .replace(/\\s+/g, ' ');
-
-                    value = value.replace(/([.!?])\\s+/g, '$1\\n');
-                    return preserveOuterSpaces(source, value);
-                }
-
-                function carlin(source) {
-                    const value = source
-                        .replace(/официальные лица/gi, 'люди с официальными лицами')
-                        .replace(/было принято решение/gi, 'кто-то наверху решил')
-                        .replace(/сообщается, что/gi, 'нам торжественно сообщают, что')
-                        .replace(/в целях/gi, 'якобы ради того, чтобы')
-                        .replace(/оптимизация/gi, 'магическое слово «оптимизация»')
-                        .replace(/необходимо/gi, 'нам, разумеется, необходимо')
-                        .replace(/\\s+/g, ' ');
-
-                    return preserveOuterSpaces(source, value);
-                }
-
-                function satiricon(source) {
-                    const value = source
-                        .replace(/правительство/gi, 'почтенное правительство')
-                        .replace(/чиновники/gi, 'служилые мужи')
-                        .replace(/министерство/gi, 'высокое министерство')
-                        .replace(/было принято решение/gi, 'совет мудрейших постановил')
-                        .replace(/сообщило/gi, 'изволило сообщить')
-                        .replace(/пользователи/gi, 'почтенная публика')
-                        .replace(/граждане/gi, 'обыватели')
-                        .replace(/\\s+/g, ' ');
-
-                    return preserveOuterSpaces(source, value);
-                }
-
-                const count = restore();
-
-                if (STYLE === 'ORIGINAL') {
-                    console.log('BrowserStyle: восстановлен исходный текст, блоков: ' + count);
-                    return 'ORIGINAL:' + count;
-                }
-
-                const nodes = collectTextNodes();
-                nodes.forEach(item => {
-                    if (!item.node || !item.node.isConnected) return;
-
-                    if (STYLE === 'ARMY') {
-                        item.node.nodeValue = army(item.original);
-                    } else if (STYLE === 'CARLIN') {
-                        item.node.nodeValue = carlin(item.original);
-                    } else if (STYLE === 'SATIRICON') {
-                        item.node.nodeValue = satiricon(item.original);
-                    }
-                });
-
-                const titles = {
-                    CARLIN: 'Карлин',
-                    SATIRICON: 'Сатирикон',
-                    ARMY: 'Армейский'
-                };
-
-                showBadge(titles[STYLE] || STYLE);
-                console.log('BrowserStyle: применён ' + STYLE + ', блоков: ' + nodes.length);
-                return STYLE + ':' + nodes.length;
-            })();
-        """.trimIndent()
-
-        webView.evaluateJavascript(script) { result ->
-            appendConsole(
-                "СТИЛЬ",
-                "Обработано: ${result ?: "нет ответа"}",
-                Color.GRAY
-            )
-        }
     }
 
     private fun updateStyleButton() {
