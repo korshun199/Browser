@@ -413,11 +413,21 @@ class MainActivity : AppCompatActivity() {
                         const parent = node.parentElement;
                         const value = node.nodeValue || '';
 
-                        if (
-                            parent &&
-                            tags.has(parent.tagName) &&
-                            value.trim().length >= 30
-                        ) {
+                        if (!parent || value.trim().length < 20) {
+                            continue;
+                        }
+
+                        if (parent.closest(
+                            'script, style, noscript, textarea, input, button, select'
+                        )) {
+                            continue;
+                        }
+
+                        const textBlock = parent.closest(
+                            'p, li, h1, h2, h3, h4, blockquote, td, th, figcaption, article'
+                        );
+
+                        if (textBlock) {
                             window.__browserOriginalTexts.push({
                                 node: node,
                                 text: value
@@ -456,7 +466,10 @@ class MainActivity : AppCompatActivity() {
                 const badge = document.createElement('div');
                 badge.id = badgeId;
                 badge.textContent =
-                    'Режим работает: ' + (titles[style] || style);
+                    'Режим работает: ' +
+                    (titles[style] || style) +
+                    ' · блоков: ' +
+                    window.__browserOriginalTexts.length;
 
                 badge.style.position = 'fixed';
                 badge.style.left = '12px';
