@@ -74,10 +74,11 @@ class MainActivity : AppCompatActivity() {
                 url?.let { urlBar.setText(it) }
                 consoleOutput.text = "Консоль JS"
 
-                // Даём странице закончить собственные сценарии, затем применяем выбранный режим.
+                
                 Handler(Looper.getMainLooper()).postDelayed({
-                    applySelectedStyleToPage()
-                }, 350)
+                    applyVisibleStyleTest()
+                }, 700)
+
             }
 
             override fun shouldInterceptRequest(
@@ -365,6 +366,119 @@ class MainActivity : AppCompatActivity() {
             appendConsole(
                 "СТИЛЬ",
                 "Обработано: ${result ?: "нет ответа"}",
+                Color.GRAY
+            )
+        }
+    }
+
+
+    private fun applyVisibleStyleTest() {
+        val styleCode = selectedStyle.name
+
+        val script = """
+            (function () {
+                const style = '$styleCode';
+                const badgeId = '__browser_style_test_badge';
+
+                if (!window.__browserOriginalTexts) {
+                    window.__browserOriginalTexts = [];
+                }
+
+                function removeBadge() {
+                    const oldBadge = document.getElementById(badgeId);
+                    if (oldBadge) oldBadge.remove();
+                }
+
+                function restoreOriginal() {
+                    window.__browserOriginalTexts.forEach(item => {
+                        if (item.node && item.node.isConnected) {
+                            item.node.nodeValue = item.text;
+                        }
+                    });
+                }
+
+                if (window.__browserOriginalTexts.length === 0) {
+                    const tags = new Set([
+                        'P', 'LI', 'H1', 'H2', 'H3', 'H4',
+                        'BLOCKQUOTE', 'TD', 'TH', 'FIGCAPTION'
+                    ]);
+
+                    const walker = document.createTreeWalker(
+                        document.body,
+                        NodeFilter.SHOW_TEXT
+                    );
+
+                    let node;
+                    while ((node = walker.nextNode())) {
+                        const parent = node.parentElement;
+                        const value = node.nodeValue || '';
+
+                        if (
+                            parent &&
+                            tags.has(parent.tagName) &&
+                            value.trim().length >= 30
+                        ) {
+                            window.__browserOriginalTexts.push({
+                                node: node,
+                                text: value
+                            });
+                        }
+                    }
+                }
+
+                restoreOriginal();
+                removeBadge();
+
+                if (style === 'ORIGINAL') {
+                    return 'Исходный: ' + window.__browserOriginalTexts.length;
+                }
+
+                const labels = {
+                    CARLIN: '[КАРЛИН] ',
+                    SATIRICON: '[САТИРИКОН] ',
+                    ARMY: '[АРМЕЙСКИЙ] '
+                };
+
+                const titles = {
+                    CARLIN: 'Карлин',
+                    SATIRICON: 'Сатирикон',
+                    ARMY: 'Армейский'
+                };
+
+                const label = labels[style] || '[СТИЛЬ] ';
+
+                window.__browserOriginalTexts.forEach(item => {
+                    if (item.node && item.node.isConnected) {
+                        item.node.nodeValue = label + item.text;
+                    }
+                });
+
+                const badge = document.createElement('div');
+                badge.id = badgeId;
+                badge.textContent =
+                    'Режим работает: ' + (titles[style] || style);
+
+                badge.style.position = 'fixed';
+                badge.style.left = '12px';
+                badge.style.bottom = '12px';
+                badge.style.zIndex = '2147483647';
+                badge.style.background = '#111';
+                badge.style.color = '#fff';
+                badge.style.padding = '10px 14px';
+                badge.style.borderRadius = '9px';
+                badge.style.font = 'bold 14px sans-serif';
+                badge.style.boxShadow = '0 3px 12px rgba(0,0,0,.45)';
+
+                document.documentElement.appendChild(badge);
+
+                return style + ': ' + window.__browserOriginalTexts.length;
+            })();
+        """.trimIndent()
+
+        webView.evaluateJavascript(script) { result ->
+            appendConsole(
+                "СТИЛЬ-ТЕСТ",
+                "Результат: ${result ?: "нет ответа"}",
                 Color.GRAY
             )
         }
